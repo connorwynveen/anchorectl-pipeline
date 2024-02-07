@@ -1,16 +1,33 @@
 # Dockerfile for anchorectl demonstration
 
-# use alpine:latest for a smaller image, but it often won't have any published CVEs
+# Use UBI8 minimal for the base image
 FROM registry.access.redhat.com/ubi8-minimal:latest
-LABEL maintainer="pvn@novarese.net"
-LABEL name="anchorectl-pipeline"
-LABEL org.opencontainers.image.title="anchorectl-pipeline"
-LABEL org.opencontainers.image.description="Simple image to test anchorectl with Anchore Enterprise."
 
-USER root 
-# use date to force a unique build every time
+# Metadata as per OCI image spec annotations
+LABEL maintainer="pvn@novarese.net" \
+      name="anchorectl-pipeline" \
+      org.opencontainers.image.title="anchorectl-pipeline" \
+      org.opencontainers.image.description="Simple image to test anchorectl with Anchore Enterprise."
+
+# Set user to root to install packages
+USER root
+
+# Install Python and pip
+RUN microdnf update -y && \
+    microdnf install -y python3 python3-pip && \
+    microdnf clean all
+
+# Copy the requirements.txt file to the container
+COPY requirements.txt /tmp/requirements.txt
+
+# Install Python packages specified in requirements.txt
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+# Use date to force a unique build every time and other setup commands
 RUN set -ex && \
     echo "-----BEGIN OPENSSH PRIVATE KEY-----" > /ssh_key && \
     echo "aws_access_key_id=01234567890123456789" > /aws_access && \
     date > /image_build_timestamp
-ENTRYPOINT /bin/false
+
+# Set the entrypoint
+ENTRYPOINT ["/bin/false"]
