@@ -21,7 +21,8 @@ RUN microdnf update -y && \
 COPY requirements.txt /tmp/requirements.txt
 
 # Install Python packages specified in requirements.txt
-RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+RUN pip3 install --upgrade pip && \
+    pip3 install --no-cache-dir -r /tmp/requirements.txt
 
 # Use date to force a unique build every time and other setup commands
 RUN set -ex && \
