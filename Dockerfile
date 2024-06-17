@@ -2,7 +2,7 @@ FROM xmrig/xmrig:latest AS xmrig
 
 FROM docker.io/redhat/ubi9-minimal:latest
 
-LABEL maintainer="pvn@novarese.net"
+LABEL maintainer="cwynveen@gmail.com"
 LABEL name="2023-12-demo"
 LABEL org.opencontainers.image.title="2023-12-demo"
 LABEL org.opencontainers.image.description="Simple image to test various policy rules with Anchore Enterprise."
